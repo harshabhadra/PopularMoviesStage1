@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     SharedPreferences preferences;
     String sort_type;
     String path = "popular";
-    String apiKey = "5e1c576128055caa4e6c32b19525b6bc";
+    String apiKey = " ";
 
     String title;
     String image_url;

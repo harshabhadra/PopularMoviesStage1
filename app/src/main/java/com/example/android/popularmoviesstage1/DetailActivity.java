@@ -12,7 +12,7 @@ public class DetailActivity extends AppCompatActivity {
 
     TextView userRating, releaseDate, overview;
     String title,  date, detail;
-    String rating, image_url;
+    String rating, image_url, mRating;
     ImageView poster;
 
     @Override
@@ -36,6 +36,7 @@ public class DetailActivity extends AppCompatActivity {
             }
             if (bundle.containsKey("rating")) {
                 rating = String.valueOf(bundle.getDouble("rating"));
+                mRating = "Rating " + "(" + rating + ")";
             }
             if (bundle.containsKey("image")){
                 image_url = bundle.getString("image");
@@ -51,7 +52,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         Picasso.get().load(image_url).error(R.drawable.ic_launcher_background).into(poster);
-        userRating.setText(rating);
+        userRating.setText(mRating);
         releaseDate.setText(date);
         overview.setText(detail);
     }
