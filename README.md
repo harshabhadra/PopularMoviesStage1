@@ -10,7 +10,7 @@ The app contains two Activiy
 This is the activity in which movies poster will be populated. I'm using Retrofit to fetch data from MovieDB API and Recycle View with 
 GridLayoutManager to populate the UI.
 
-# DetailsActivity
+## DetailsActivity
 
 This activity will open when you click on any image in MainActivity.
 
