@@ -5,11 +5,13 @@ This Application will fetch data from MovieDB API and populate the UI with Movie
 activity will open, in which you can see the Details about the movie(Name, Release Date, User Rating, Overview).
 The app contains two Activiy
 
-#MainActivity
+## MainActivity
+
 This is the activity in which movies poster will be populated. I'm using Retrofit to fetch data from MovieDB API and Recycle View with 
 GridLayoutManager to populate the UI.
 
-#DetailsActivity
+# DetailsActivity
+
 This activity will open when you click on any image in MainActivity.
 
 In order to test the App you need get your own API key by creating an account on https://www.themoviedb.org/?_dc=1559554767.
