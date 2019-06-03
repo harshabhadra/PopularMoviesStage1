@@ -1,12 +1,17 @@
 package com.example.android.popularmoviesstage1;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,6 +35,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     ArrayList<MovieItems>movieItemsArrayList = new ArrayList<>();
     TextView errorText;
     ProgressBar loadingIndicator;
+    SharedPreferences preferences;
+    String sort_type;
+    String path = "popular";
+    String apiKey = "5e1c576128055caa4e6c32b19525b6bc";
+
+    String title;
+    String image_url;
+    String release_date;
+    String overview;
+    Double user_rating;
+    int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +55,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         loadingIndicator = findViewById(R.id.loading_indicator);
         errorText = findViewById(R.id.error_text);
         loadingIndicator.setVisibility(View.VISIBLE);
+
+        preferences = getSharedPreferences("popular_movies",MODE_PRIVATE);
+        sort_type = preferences.getString("sort_type","popular");
+
+        if (sort_type.equals("popular")){
+            getSupportActionBar().setTitle("Popular Movies");
+        }else if (sort_type.equals("top_rated")){
+            getSupportActionBar().setTitle("Top Rated Movies");
+            path = "top_rated";
+        }
 
         movieAdapter = new MovieAdapter(this,movieItemsArrayList, this);
         recyclerView.setHasFixedSize(true);
@@ -54,8 +80,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
-        String path = "popular";
-        String apiKey = "5e1c576128055caa4e6c32b19525b6bc";
+
 
         MovieInterface movieInterface = retrofit.create(MovieInterface.class);
         Call<String> call = movieInterface.getString(path, apiKey);
@@ -93,11 +118,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                 JSONObject movieObj = jsonArray.getJSONObject(i);
                 String posterImage = movieObj.getString("poster_path");
-                String image_url = "http://image.tmdb.org/t/p/w185/" + posterImage;
-                String title = movieObj.getString("title");
-                String release_date = movieObj.getString("release_date");
-                String overview = movieObj.getString("overview");
-                Double user_rating = movieObj.getDouble("popularity");
+                image_url = "http://image.tmdb.org/t/p/w185/" + posterImage;
+                title = movieObj.getString("title");
+                release_date = movieObj.getString("release_date");
+                overview = movieObj.getString("overview");
+                user_rating = movieObj.getDouble("vote_average");
 
                 MovieItems movieItems = new MovieItems(title, user_rating, release_date, overview, image_url);
                 movieItemsArrayList.add(movieItems);
@@ -113,7 +138,72 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public void onClick(int itemClicked) {
 
         Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("title",movieItemsArrayList.get(itemClicked).getTitle());
+        bundle.putString("image", movieItemsArrayList.get(itemClicked).getPosterImage());
+        bundle.putDouble("rating", movieItemsArrayList.get(itemClicked).getUserRating());
+        bundle.putString("date",movieItemsArrayList.get(itemClicked).getReleaseDate());
+        bundle.putString("detail",movieItemsArrayList.get(itemClicked).getOverview());
+        detailIntent.putExtras(bundle);
         startActivity(detailIntent);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.preference_sort){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final SharedPreferences.Editor editor = preferences.edit();
+            int selected = 0;
+            sort_type = preferences.getString("sort_type","popular");
+            if (sort_type.equals("popular")){
+                selected = 0;
+            }else if (sort_type.equals("top_rated")){
+                selected = 1;
+            }
+            builder.setTitle("Select Option");
+            builder.setSingleChoiceItems(R.array.sort_types, selected,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == 0)
+                                editor.putString("sort_type", "popular");
+                            else if (which == 1)
+                                editor.putString("sort_type", "top_rated");
+                        }
+                    });
+            builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    editor.apply();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+                    startActivity(intent);
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

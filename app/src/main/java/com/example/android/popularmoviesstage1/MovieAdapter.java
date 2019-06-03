@@ -29,22 +29,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         clickListener = clickHandler;
     }
 
-    public static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView title, user_rating, release_date, overview;
         ImageView poster_image;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            title = itemView.findViewById(R.id.movie_title);
-            title.setVisibility(View.GONE);
-            user_rating = itemView.findViewById(R.id.user_ratings);
-            user_rating.setVisibility(View.GONE);
-            release_date = itemView.findViewById(R.id.movie_release_date);
-            release_date.setVisibility(View.GONE);
-            overview = itemView.findViewById(R.id.overview);
-            overview.setVisibility(View.GONE);
             poster_image = itemView.findViewById(R.id.movie_image);
             itemView.setOnClickListener(this);
         }
@@ -52,7 +43,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         @Override
         public void onClick(View v) {
             int clickPosition = getAdapterPosition();
-            clickListner.onClick
+            clickListener.onClick(clickPosition);
         }
     }
 
@@ -68,10 +59,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public void onBindViewHolder(@NonNull MovieViewHolder movieViewHolder, int i) {
 
         Picasso.get().load(movieItems.get(i).getPosterImage()).into(movieViewHolder.poster_image);
-        movieViewHolder.title.setText(movieItems.get(i).getTitle());
-        movieViewHolder.release_date.setText(movieItems.get(i).getReleaseDate());
-        movieViewHolder.user_rating.setText(String.valueOf(movieItems.get(i).getUserRating()));
-        movieViewHolder.overview.setText(movieItems.get(i).overview);
     }
 
     @Override
