@@ -32,20 +32,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private MovieAdapter movieAdapter;
     private RecyclerView recyclerView;
+    MovieItems movieItems;
     ArrayList<MovieItems>movieItemsArrayList = new ArrayList<>();
     TextView errorText;
     ProgressBar loadingIndicator;
     SharedPreferences preferences;
     String sort_type;
     String path = "popular";
-    String apiKey = " ";
+    String apiKey = "";
 
     String title;
     String image_url;
     String release_date;
     String overview;
     Double user_rating;
-    int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +66,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             path = "top_rated";
         }
 
+        int numberOfColumns = Utility.calculateNoOfColumns(getApplicationContext(), 140);
         movieAdapter = new MovieAdapter(this,movieItemsArrayList, this);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),3));
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),numberOfColumns));
         recyclerView.setAdapter(movieAdapter);
         fetchJson();
     }
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 overview = movieObj.getString("overview");
                 user_rating = movieObj.getDouble("vote_average");
 
-                MovieItems movieItems = new MovieItems(title, user_rating, release_date, overview, image_url);
+                 movieItems = new MovieItems(title, user_rating, release_date, overview, image_url);
                 movieItemsArrayList.add(movieItems);
             }
             movieAdapter.notifyDataSetChanged();
@@ -134,17 +135,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
     }
 
+
+
     @Override
     public void onClick(int itemClicked) {
 
         Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("title",movieItemsArrayList.get(itemClicked).getTitle());
-        bundle.putString("image", movieItemsArrayList.get(itemClicked).getPosterImage());
-        bundle.putDouble("rating", movieItemsArrayList.get(itemClicked).getUserRating());
-        bundle.putString("date",movieItemsArrayList.get(itemClicked).getReleaseDate());
-        bundle.putString("detail",movieItemsArrayList.get(itemClicked).getOverview());
-        detailIntent.putExtras(bundle);
+        detailIntent.putExtra("MovieItems", movieItemsArrayList.get(itemClicked));
         startActivity(detailIntent);
 
     }
@@ -206,4 +203,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

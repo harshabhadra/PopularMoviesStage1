@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 public class DetailActivity extends AppCompatActivity {
 
     TextView userRating, releaseDate, overview;
@@ -26,30 +28,15 @@ public class DetailActivity extends AppCompatActivity {
         poster = findViewById(R.id.image_tv);
 
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        bundle = intent.getExtras();
+        MovieItems movieItems = intent.getParcelableExtra("MovieItems");
+        title = movieItems.getTitle();
+        getSupportActionBar().setTitle(title);
+        date = movieItems.getReleaseDate();
+        detail = movieItems.getOverview();
+        image_url = movieItems.getPosterImage();
+        rating = String.valueOf(movieItems.getUserRating());
+        mRating = "Rating " + "(" + rating + ")";
 
-        try {
-            if (bundle.containsKey("title")) {
-                title = bundle.getString("title");
-                getSupportActionBar().setTitle(title);
-            }
-            if (bundle.containsKey("rating")) {
-                rating = String.valueOf(bundle.getDouble("rating"));
-                mRating = "Rating " + "(" + rating + ")";
-            }
-            if (bundle.containsKey("image")){
-                image_url = bundle.getString("image");
-            }
-            if (bundle.containsKey("date")){
-                date = bundle.getString("date");
-            }
-            if (bundle.containsKey("detail")){
-                detail = bundle.getString("detail");
-            }
-        }catch (NullPointerException e){
-            e.printStackTrace();
-        }
 
         Picasso.get().load(image_url).error(R.drawable.ic_launcher_background).into(poster);
         userRating.setText(mRating);
