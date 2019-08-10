@@ -14,7 +14,7 @@ GridLayoutManager to populate the UI.
 
 This activity will open when you click on any image in MainActivity.
 
-##What I leart 
+## What I leart 
 1. Using RecyclerView with GridLayoutMananger
 2. Calculating no. of columns in GridLayout according to screen size 
 
