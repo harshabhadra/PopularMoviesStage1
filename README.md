@@ -14,6 +14,10 @@ GridLayoutManager to populate the UI.
 
 This activity will open when you click on any image in MainActivity.
 
+##What I leart 
+1. Using RecyclerView with GridLayoutMananger
+2. Calculating no. of columns in GridLayout according to screen size 
+
 ## API Key
 In order to test the App you need get your own API key by creating an account on https://www.themoviedb.org/?_dc=1559554767.
  You can create your own API key after you create an account.
